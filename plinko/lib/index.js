@@ -165,7 +165,7 @@ function dropBalls(position, quantity) {
   const endSize = parseFloat(document.querySelector('#size-end').value);
   for (let i = 0; i < quantity; i++) {
     ballCount++;
-    if (ballCount > 785) {
+    if (ballCount > 1000) {
       ballCount--;
       break;
     }
