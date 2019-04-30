@@ -11,7 +11,9 @@ function runAnalysis() {
 
     _.range(1, 20).forEach(k => {
         const accuracy = _.chain(testSet)
-            .filter(testPoint => knn(trainingSet, testPoint[0], k) === testPoint[3])
+            .filter(testPoint => (
+                knn(trainingSet, _.initial(testPoint), k) === _.last(testPoint)
+            ))
             .size()
             .divide(testSetSize)
             .value();
@@ -21,8 +23,12 @@ function runAnalysis() {
 }
 
 const knn = (dataset, predictionPoint, k) => (
+    // predictionPoint shouldn't be passed in with the label
     _.chain(dataset)
-        .map(row => [distance(row[0], predictionPoint), row[3]])
+        .map(row => [
+            distance(_.initial(row), predictionPoint),
+            _.last(row)
+        ])
         .sortBy(row => row[0])
         .slice(0, k)
         .countBy(row => row[1])
@@ -43,4 +49,10 @@ const splitDataset = (dataset, testCount) => {
     return [testSet, trainingSet];
 }
 
-const distance = (pointA, pointB) => Math.abs(pointA - pointB);
+const distance = (pointA, pointB) => (
+    _.chain(pointA)
+        .zip(pointB)
+        .map(([a, b]) => (a - b) ** 2)
+        .sum()
+        .value() ** 0.5
+);
