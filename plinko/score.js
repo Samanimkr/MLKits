@@ -5,6 +5,28 @@ function onScoreUpdate(dropPosition, bounciness, size, bucketLabel) {
     outputs.push([dropPosition, bounciness, size, bucketLabel]);
 }
 
+// Uncomment for finding out how much does each feature affect the accuracy
+// function runAnalysis() {
+//     const testSetSize = 100;
+//     const k = 10;
+
+
+//     _.range(0, 3).forEach(feature => {
+//         const data = _.map(outputs, row => [row[feature], _.last(row)])
+//         const [testSet, trainingSet] = splitDataset(minMaxNormalisation(data, 1), testSetSize);
+
+//         const accuracy = _.chain(testSet)
+//             .filter(testPoint => (
+//                 knn(trainingSet, _.initial(testPoint), k) === _.last(testPoint)
+//             ))
+//             .size()
+//             .divide(testSetSize)
+//             .value();
+
+//         console.log(`For feature=${feature}, accuracy: ${accuracy}`);
+//     });
+// }
+
 function runAnalysis() {
     const testSetSize = 100;
     const [testSet, trainingSet] = splitDataset(outputs, testSetSize);
@@ -56,3 +78,22 @@ const distance = (pointA, pointB) => (
         .sum()
         .value() ** 0.5
 );
+
+// Uncomment for normalising the data (makes the ball bounciness and ball size just as effective as the drop position)
+// const minMaxNormalisation = (data, featureCount) => {
+//     const clonedData = _.cloneDeep(data)
+
+//     for (let columnIndex = 0; columnIndex < featureCount; columnIndex++) {
+//         const column = clonedData.map(row => row[columnIndex]);
+
+//         const min = _.min(column);
+//         const max = _.max(column);
+
+//         for (let rowIndex = 0; rowIndex < clonedData.length; rowIndex++) {
+//             // Normalising the data
+//             clonedData[rowIndex][columnIndex] = (clonedData[rowIndex][columnIndex]) / (max - min);
+//         }
+//     }
+
+//     return clonedData;
+// }
